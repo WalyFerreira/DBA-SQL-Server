@@ -1,3 +1,5 @@
+-- Passo a passo de boas práticas para instalação do SQL Server
+
 Instalação SQL
 
 	-- Aqui vamos partir do momento em que a ISO do SQL já esteja executável:
