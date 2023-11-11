@@ -10,7 +10,6 @@ No SQL Server, nós temos por padrão 4 bases de sistemas, sendo elas "master, t
 
 	A database "temdb" é uma das bases com mais I/O (imput/output) no SQL Server. Ela é utilizada para tabelas temporárias, cursores, tabelas variáveis, rebuild online de index, order by e group by (em caso de pouca memória no servidor), etc..
 
-
 Observação: vale ressaltar que nenhuma base de sistema é restaurada para versões divergentes das quais já está instalada, por exemplo, um SQL 2019 migrando para um outro servidor com SQL 2022.
 
-Extra: na temdb, podemos ter cenários de querys muito pesadas que fazem o arquivo de log crescer de maneira rápida e exponencial, neste caso devemos sempre avaliar o que está rodando e buscar melhorias, pois, caso o disco venha encher e o banco pare, será necessário restartar meu serviço SQL para que a temdb seja reconstruída e libere espaço.
+EXTRA: na temdb, podemos ter cenários de querys muito pesadas que fazem o arquivo de log crescer de maneira rápida e exponencial, neste caso devemos sempre avaliar o que está rodando e buscar melhorias, pois, caso o disco venha encher e o banco pare, será necessário restartar meu serviço SQL para que a temdb seja reconstruída e libere espaço.
