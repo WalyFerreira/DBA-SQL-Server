@@ -1,0 +1,16 @@
+Bases de Sistemas
+
+No SQL Server, nós temos por padrão 4 bases de sistemas, sendo elas "master, tempdb, model e msdb"
+
+	A database "master" contém todas as informaões de configurações da instância, localização dos arquivos MDF, NDF e LDF, todos os logins, linked servers, processos e bloqueios, etc.;
+
+	A database "model" é uma base modelo, utilizada no momento em que criamos novas databases, tendo em vista que ela carrega algumas configurações como o schema do banco (por padrão "dbo") mas que, se alterada na model, todas as bases cridas levarão o schema criado. Outra funcionalidade é quando o SQL Server sofre algum restart, já que o TempDB é recriado sempre utilizando a "model";
+
+	A database "msdb" é utilizada pelo SQL Server Agent, Database Mail e Service Broker. Neça contém ambém todas as informações dos jobs e histórico de backup/restore.
+
+	A database "temdb" é uma das bases com mais I/O (imput/output) no SQL Server. Ela é utilizada para tabelas temporárias, cursores, tabelas variáveis, rebuild online de index, order by e group by (em caso de pouca memória no servidor), etc..
+
+
+Observação: vale ressaltar que nenhuma base de sistema é restaurada para versões divergentes das quais já está instalada, por exemplo, um SQL 2019 migrando para um outro servidor com SQL 2022.
+
+Extra: na temdb, podemos ter cenários de querys muito pesadas que fazem o arquivo de log crescer de maneira rápida e exponencial, neste caso devemos sempre avaliar o que está rodando e buscar melhorias, pois, caso o disco venha encher e o banco pare, será necessário restartar meu serviço SQL para que a temdb seja reconstruída e libere espaço.
