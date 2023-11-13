@@ -1,5 +1,7 @@
--- Proc utilizada para validar conex�es dentro do banco de dados, trazendo a rela��o de utiliza��o de CPU, 
--- mem�ria, quantidade de bloqueios, sess�es ativas, sql text, show plan, etc..
+-- ESTE SCRIPT É UTILIZADO PPARA REALIZAR UMA VALIDAÇÃO DAS CONEXÕES EM TEMPO REAL SEMPRE QUE EXECUTADA. SENDO ASSIM, O RESULT NOS TRÁS UMA RELAÇÃO DE UTILIZAÇÃO DE CPU, 
+-- MEMÓRIA, QUANTIDADE DE LOCKS, SESSÕES ATIVAS, SQL TEXT, SHOW PLAN, ETC..
+
+-- SENDO ASSIM, PARA FACILITAR A EXECUÇÃO E A ANÁLISE NO MOMENTO NECESSÁRIO, FOI CRIADO A PROC COM O NOME "SP_CONNECTIONS", SEM PRECISAR PASSAR NENHUM PARÂMETRO!
 
 USE master
 GO
