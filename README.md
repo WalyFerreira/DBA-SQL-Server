@@ -1,4 +1,4 @@
-"Bem-vindo(a) ao repositório do DBA Walysson!
+"Bem-vindo(a) ao meu repositório!
 
 Aqui, tenho como missão utilizar esta ferramenta para compartilhar meus conhecimentos através de estudos e da experiência como DBA. Com teoria, scripts SQL e até mesmo com um 'guia' de instalação do banco de dados, você poderá ter uma visão de como estudo, aplico e pratico no dia a dia os conhecimentos adquiridos.
 
