@@ -2,7 +2,7 @@ Login
 
 Existem três níveis de segurança ao conceder acesso para a instância SQL, sendo elas "Nível de Servidor", "Nível de Database" e "Nível de Objeto".
 
-	O "Nível de Servidor" contempla o login de Windows (Domínio) ou login do SQL Server. A liberação de acesso a nível de servidor (Server Roles) é um ponto importante para nós DBAs, caso seja nosso usuário ou outro usuário DBA, devemos nos atentar em conceder o acesso "sysadmin", porém, se o usuário não é o administrador de banco de dados, devemos mapear (User Mapping) os seus acessos, onde entra no "Nível de Database";
+	O "Nível de Servidor" contempla o login de Windows (domínio) ou login do SQL Server. A liberação de acesso a nível de servidor (Server Roles) é um ponto importante para nós DBAs, caso seja nosso usuário ou outro usuário DBA, devemos nos atentar em conceder o acesso "sysadmin", porém, se o usuário não é o administrador de banco de dados, devemos mapear (User Mapping) os seus acessos, onde entra no "Nível de Database";
 
 	O "Nível de Database" nos permite controlar os acessos do usuário, especificando qual base de dados ele terá livre acesso e quais serão suas ações dentro daquela base, ou seja, se for uma aplicação que fará apenas leitura dos dados na database "Teste1", podemos conceder apenas a permissão "db_datareader". Neste mapeamento podemos também conceder acesso a mais de uma base e conceder mais de uma permissão;
 
