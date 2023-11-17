@@ -1,0 +1,20 @@
+Database
+
+Ao criarmos uma database, o SQL automaticamente cria fisicamente dois arquivos padrões com a extensão .MDF e .LDF:
+
+	O .MDF é o data file primário, onde está contido todas as tabelas, índices, dados, etc.;
+
+	O .LDF é o log file, onde contém todas as transações/modificações realizadas dentro do banco de dados.
+
+Por opção, podemos realizar a criação do arquivo .NDF, que é pouco utilizado, mas extremamente útil quando temos um volume grande de dados com partições em alguma database.
+
+Pontos importantes
+
+	Na criação, devemos nos atentar no tamanho inicial dos arquivos de dados e log:
+
+		-> o arquivo .MDF deve ser estimado por quem projetou a aplicação;
+		-> o arquivo .LDF recomenda-se ter de 10% à 25% do tamanho do .MDF, o que é um valor razoável.
+
+	Para o tamanho máximo da base há também pontos importantes para se atentar:
+
+		-> caso haja diversos discos no seu servidor e datafiles distribuídos dentro destes discos, deixar como tamanho máximo ilimitado é uma boa prática, já que se limitarmos e algum disco encher, o banco poderá parar. Todavia, os alertas de disco deverão ser configurados para um maior controle.
