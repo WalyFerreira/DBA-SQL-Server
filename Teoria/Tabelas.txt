@@ -36,26 +36,31 @@ Tipos de Dados
 Constraints
 
 	-> Primary Key:
+
 		- define um ou mais campos como únicos;
 		- apenas 1 por tabela;
 		- por default já cria um clustered index (índice clusterizado).
 
 	-> Foreign Key:
+
 		- coluna que referencia a chave primária de uma outra tabela, criando assim uma relação entre elas;
 		- garante a integridade dos dados.
 
 	-> Unique:
+
 		- define um ou mais campos como únicos;
 		- podemos ter várias por tabelas;
 		- por default já cria um nonclustered indexe (índice não-clusterizado).
 
 	-> Check:
+
 		- validação realizada no momento do insert;
 		- garantir a integridade do banco de dados;
 		- Ex: tenho uma coluna de "qnt_produtos" e quero que ela nunca tenha valor negativo. O check faz essa validação;
 		- Ex: CONSTRAINT CHK01_Produtos CHECK (qnt_produtos >= 0).
 
 	-> Default:
+
 		- valor default que será inserido para uma coluna quando não for especificado no insert;
 		- Ex: tenho uma coluna que guarda a data de inserção dos dados, então posso criar com um valor default de GETDATE() para sempre ser inserido a data atual da execução de INSERT;
 		- Ex: data_insert DATE() DEFAULT GETDATE().
