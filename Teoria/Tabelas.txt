@@ -1,0 +1,61 @@
+Tabelas
+
+Tipos de Dados
+
+	-> Numérico: 	
+
+		bigint (8 bytes) - 9.223.372.036.854.775.807
+		int (4 bytes) - 2.147.483.467
+		smallint (2 bytes) - 32.767
+		tinyint (1 bytes) - 0 à 255
+		numeric (X,Y)
+		bit (0 ou 1)
+
+	-> Data e Hora: 
+
+		datetime (8 bytes)
+		date (3 bytes)
+		time (5 bytes)
+
+	-> Caracteres: 	
+
+		char
+			- tipo de dados fixo;
+			- vai consumir bytes conforme passado na coluna. Ex: char(10) = 10 bytes;
+			- armazenamento máximo de 8000 bytes.
+
+ 		varchar
+			- tipo de dados variável;
+			- vai consumir bytes conforme a quantidade de caracteres. Ex: coluna varchar(10) com a string 'Walysson' = 7 bytes;
+			- armazenamento máximo de 8000 bytes, porém há uma opção de varchar(max) - até 2GB de caracteres.
+
+		nvarchar
+			- utilizado para receber caracteres de outros idiomas (Japão, China, Korea, etc.);
+			- ocupa o dobro de espaço do varchar.
+
+Constraints
+
+	-> Primary Key:
+		- define um ou mais campos como únicos;
+		- apenas 1 por tabela;
+		- por default já cria um clustered index (índice clusterizado).
+
+	-> Foreign Key:
+		- coluna que referencia a chave primária de uma outra tabela, criando assim uma relação entre elas;
+		- garante a integridade dos dados.
+
+	-> Unique:
+		- define um ou mais campos como únicos;
+		- podemos ter várias por tabelas;
+		- por default já cria um nonclustered indexe (índice não-clusterizado).
+
+	-> Check:
+		- validação realizada no momento do insert;
+		- garantir a integridade do banco de dados;
+		- Ex: tenho uma coluna de "qnt_produtos" e quero que ela nunca tenha valor negativo. O check faz essa validação;
+		- Ex: CONSTRAINT CHK01_Produtos CHECK (qnt_produtos >= 0).
+
+	-> Default:
+		- valor default que será inserido para uma coluna quando não for especificado no insert;
+		- Ex: tenho uma coluna que guarda a data de inserção dos dados, então posso criar com um valor default de GETDATE() para sempre ser inserido a data atual da execução de INSERT;
+		- Ex: data_insert DATE() DEFAULT GETDATE().
