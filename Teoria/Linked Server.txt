@@ -1,0 +1,11 @@
+Linked Server
+
+- o Linked Server é uma funcionalidade do SQL Server bastante útil para estabelecer uma conexão entre dois ou mais servidores;
+
+- essa "ponte" de conexão é possível entre fontes OLE DB, como Excel, Access, servidores SQL Server e outros SGBDs como Oracle, MySQL, PostgreSQL, etc.;
+
+- uma das principais vantagens de se utilizar Linked Server é a facilidade de executar consultas distribuídas e atualizações que envolvem diversas bases em servidores diferentes.
+
+- como boa prática, não é aconselhável utilizar o SA no Linked Server por motivos de segurança. O correto é criar um usuário com as permissões necessárias, ou atribuir algum login com as permissões necessárias.
+
+WARNING: devemos usar com cuidado e moderação, tendo em vista que, em tabelas grandes, pode causar locks e querys lentas.
