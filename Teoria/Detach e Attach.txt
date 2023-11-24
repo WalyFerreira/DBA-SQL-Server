@@ -2,10 +2,10 @@ Detach e Attach
 
 Detach
 	
-	- retira a database do SQL Server e libera os arquivos .MDF, .NDF e .LDF para movimentação;
+	- retira a database do SQL Server e libera os arquivos .MDF, .NDF e .LDF para movimentação.
 
 Attach
 
-	- com os arquivos .MDF, .NDF e .LDF livres, você pode subir a database em outro disco ou servidor;
+	- com os arquivos .MDF, .NDF e .LDF livres, você pode subir a database em outro disco ou servidor.
 
 Observação: quando utilizamos esse recurso, automaticamente estamos tirando uma base de dados do servidor, ou seja, automaticamente é perdido todo o histórico de execução de backup.
