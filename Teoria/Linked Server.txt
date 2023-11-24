@@ -4,7 +4,7 @@ Linked Server
 
 - essa "ponte" de conexão é possível entre fontes OLE DB, como Excel, Access, servidores SQL Server e outros SGBDs como Oracle, MySQL, PostgreSQL, etc.;
 
-- uma das principais vantagens de se utilizar Linked Server é a facilidade de executar consultas distribuídas e atualizações que envolvem diversas bases em servidores diferentes.
+- uma das principais vantagens de se utilizar Linked Server é a facilidade de executar consultas distribuídas e atualizações que envolvem diversas bases em servidores diferentes;
 
 - como boa prática, não é aconselhável utilizar o SA no Linked Server por motivos de segurança. O correto é criar um usuário com as permissões necessárias, ou atribuir algum login com as permissões necessárias.
 
