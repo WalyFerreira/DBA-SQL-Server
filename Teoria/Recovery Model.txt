@@ -1,0 +1,25 @@
+Recovery Model
+
+Simple
+
+	- Muito se ouve falar que, quando uma base está no modo recovery model simple não é escrito nada no arquivo de log, todavia isso não é verdade, já que este modo apenas não guarda suas transações no .LDF após finalizado qualquer execução, portanto, ele cresce conforme utilização, mas ao parar, o próprio SQL faz a limpeza no disco;
+
+	- Modelo com menor esforço administrativo, pois não tem backup de log;
+
+	- Não é possível restaurar até um determinado momento;
+
+	- Não é indicado para bases de produção e também para bases críticas.
+
+Full
+
+	- Neste modelo é guardado toda transação no arquivo de log;
+
+	- Com o recovery model full é necessário o backup de log para ser salvo as alterações e em seguida feito a limpeza do disco;
+
+	- Guarda toda operação de escrita no arquivo de log;
+
+	- Extremamente obrigatório para bases críticas;
+
+	- Devemos sempre ficar atento ao tamanho do arquivo .LDF.
+
+IMPORTANTE: caso seja necessário um update/delete de muitos registros, é aconselhável que seja divido por blocos, para que o log não cresça infinitamente sem ao menos ter uma limpeza de disco, seja no modelo full ou simple.
