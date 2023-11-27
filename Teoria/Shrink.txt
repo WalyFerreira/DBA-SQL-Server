@@ -1,0 +1,21 @@
+Shrink
+
+- Reduz arquivos MDF, NDF e LDF do SQL Server;
+
+MDF/NDF
+
+	- Ao fazer um delete em alguma tabela, temos que ter em mente que essa "limpeza" de dados, não interfere no tamanho do disco. Desta forma usamos o shrink para realizar essa redução após o delete;
+
+	- O shrink não causa lock entres as bases, todavia gera uma concorrência pela utilização dos recursos do SQL Server, utilização de página dos discos, CPU, etc.;
+
+WARNING: quando executamos o shrink em arquivos MDF, o que não foi reduzido sofre com a fragmentação dos índices. Desta forma devemos apenas executá-lo em casos extremamente necessários, todavia não é aconselhado;
+
+LDF
+
+	- Vamos imaginar o cenário onde foi executado um update de milhões de linhas e que o disco tem crescido por essa ação, para reduzirmos o espaço também realizamos a execução do shrink;
+
+	- Pode ser executado em horário produtivo, entretanto não pode ser uma rotina diária, pois fragmenta o arquivo de log, podendo causar problema de performance após certo tempo;
+
+	- Você só consegue fazer o shrink quando o arquivo de log não está em uso, ou seja, com alguma transação ativa no banco de dados;
+
+	- A execução é bem rápida e sem impactos para a produção.
