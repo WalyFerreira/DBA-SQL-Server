@@ -1,0 +1,37 @@
+Particionamento
+
+	- No SQL Server existe o particionamento de tabela e índices. Onde essas partições são divididas em unidades que podem ser distribuídas em um ou mais grupos de arquivos no banco de dados;
+
+	- Os dados são particionados horizontalmente, para que os grupos de linhas sejam mapeados em partições individuais;
+
+	- Todas as partições de um único índice ou de uma única tabela, devem estar no mesmo banco de dados;
+
+	- A tabela/indice são tratados como uma única entidade lógica quando são executadas consultas ou atualizações nos dados;
+
+	- Conceitualmente, uma função de partição é um objeto de banco de dados que define como as linhas de uma tabela ou índices são mapeados para um conjunto de partições, com base nos valores de determinada coluna (coluna de particionamento), ou seja, cada valor nesta coluna é uma entrada para a função de particionamento, na qual retorna um valor de partição;
+
+	- O particionamento é muito útil para gerenciar e manipular grandes conjuntos de dados de maneira mais eficiente:
+
+		-> Divisão de dados: imaginamos o cenário de uma loja, onde podemos definir uma coluna com DATETIME para a data de vendas em uma tabela particionada em 12 partições (considerando os meses do ano);
+
+		-> Melhoria no desempenho: é possível aumentar o desempenho das consultas e operações de manutenção, como inserção, atualização e exclusão de dados, pois o banco pode segmentar e manipular apenas uma parte dos dados, em vez da tabela inteira;
+
+		-> Facilidade de manutenção: as partições podem facilitar a exclusão ou o arquivamento dos dados antigos, já que é possível remover uma partição inteira em vez de lidar com todos os dados de uma vez;
+
+		-> Gestão de armazenamento: é possível armazenar partições mais antigas em diferentes unidades de armazenamento, o que pode ser útil para otimizar o uso do armazenamento e gerenciar melhor o desempenho;
+
+		-> Alteração de esquema: as partições podem permitir a alteração de esquema em partes menores da tabela, o que pode ser útil ao adicionar/remover colunas específicas de uma partição sem afetar a tabela inteira.
+
+	OBSERVAÇÃO: O SQL Server dá suporte até 15 mil partições por tabela ou índice, todavia, o uso de mais de mil partições tem impacto na memória, operação de índices particionados, comandos DBCC e consultas.
+
+Grupo de arquivos
+
+	- Ao colocar suas partições em vários grupos de arquivos, podemos executar backups e restores independentes, já que podemos executar backups em grupos de arquivos individuais;
+
+	- Ao usarmos o armazenamento em camadas, o uso de vários grupos de arquivos permite atribuir partições específicas a esses armazenamentos, por exemplo, para colocar partições mais antigas e acessadas com menos frequência em um armazenamento mais lento e mais econômico;
+
+	OBSERVAÇÃO: esse gerenciamento de arquivos e grupo de arquivos para as tabelas particionadas podem adicionar uma complexidade nas tarefas da administração desses dados, portanto, se os procedimentos de backup e restore não se benificiam desses grupos de arquivos, um só grupo para todas as partições é recomendada.
+
+Memória
+
+	- É recomendável usar pelo menos 16 GB de RAM se um número grande de partições estiverem em uso, pois, caso o sistema não tenha a memória suficiente, as instruções DML, DDL, entre outras, podem falhar.
