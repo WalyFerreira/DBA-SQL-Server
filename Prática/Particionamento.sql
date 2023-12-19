@@ -98,3 +98,47 @@ go
 --drop table PT_01_Table
 --drop partition scheme PS_01_Scheme
 --drop partition function PF_01_Range
+
+-- QUANDO PRECISAMOS REALIZAR ALGUM EXPURGO DE DADOS DAS PARTIÇÕES, NÓS PODEMOS REALIZAR A CRIAÇÃO DE UMA NOVA TABELA PARA RECEBER ESSES DADOS E EM SEGUIDA PROSSEGUIR COM O EXPURGO
+-- CRIANDO UMA NOVA TABELA PARTICIONADA, COM AS MESMAS COLUNAS DA PRINCIPAL
+create table PT_01_Table_Expurgo (col1 int primary key, col2 char(10))
+	on PS_01_Scheme (col1);
+go
+
+-- MOVENDO A PARTIÇÃO 4 DA TABELA PRINCIPAL PARA A TABELA DE EXPURGO
+alter table PT_01_Table switch partition 4 to PT_01_Table_Expurgo partition 4
+
+-- VERIFICANDO A DISTRIBUIÇÃO DOS DADOS DA TABELA PRINCIPAL
+select	$partition.PF_01_Range(a.col1) as "N° da Partição",
+		count(*) as "Total de Linhas"
+from PT_01_Table a
+group by $partition.PF_01_Range(a.col1)
+order by 1
+go 
+
+-- VERIFICANDO A DISTRIBUIÇÃO DOS DADOS DA TABELA DE EXPURGO
+select	$partition.PF_01_Range(a.col1) as "N° da Partição",
+		count(*) as "Total de Linhas"
+from PT_01_Table_Expurgo a
+group by $partition.PF_01_Range(a.col1)
+order by 1
+go
+
+-- REALIZANDO UM "ROLBACK" DA PARTICIÇÃO 4 DA TABELA DE EXPURGO PARA A TABELA PRINCIPAL
+alter table PT_01_Table_Expurgo switch partition 4 to PT_01_Table partition 4
+
+-- VERIFICANDO A DISTRIBUIÇÃO DOS DADOS DA TABELA PRINCIPAL
+select	$partition.PF_01_Range(a.col1) as "N° da Partição",
+		count(*) as "Total de Linhas"
+from PT_01_Table a
+group by $partition.PF_01_Range(a.col1)
+order by 1
+go 
+
+-- VERIFICANDO A DISTRIBUIÇÃO DOS DADOS DA TABELA DE EXPURGO
+select	$partition.PF_01_Range(a.col1) as "N° da Partição",
+		count(*) as "Total de Linhas"
+from PT_01_Table_Expurgo a
+group by $partition.PF_01_Range(a.col1)
+order by 1
+go
