@@ -1,0 +1,45 @@
+Backup
+
+Backup FULL
+
+	- O backup full salva todas as páginas de um Banco de Dados;
+	- Quando é iniciando um backup, é salvo o log de transação até sua finalização:
+
+		- Ex.: imaginemos um cenário onde se inicia um bkp full às 14:00hrs, e por conta do tamanho da base demore 2hrs para finalizar, porém logo às 17:00hrs os dados daquela base são perdidos e você precise realizar o restore através do último bkp feito. Nesse caso você terá os dados até às 16:00hrs (quando foi finalizado o bkp), já que o próprio SQL finaliza o bkp full pegando todas as alterações que o log recebeu e "anexa" junto ao arquivo .bak.
+
+	- Principais opções:
+
+		- INIT/NOINIT: define se o arquivo será sobrescrito;
+		- COMPRESSION: faz a compressão do arquivo de backup. A partir do SQL 2008 R2, já é disponível na versão Standard;
+		- STATS = 10: informa o progresso do backup a cada 10% de execução;
+		- CHECKSUM: ajuda a encontrar problemas de corrupção mais rápido.
+
+Backup DIFF
+
+	- O backup diferencial salva as páginas de dados alteradas desde o último bkp full;
+
+	- Só é possível executá-lo se existir um backup full;
+
+	- O diff é cumulativo:
+
+		- Ex.: se executarmos um full no Domingo e temos uma rotina de bkp diff todo os dias, ele vai salvar as alterações sempre utilizando o full como parâmetro, ou seja, o diff da segunda-feira pega as alterações desde domingo, o diff da terça-feira também, e assim por diante até o próximo full.
+
+	- As opções na hora do bkp e as sintaxes são identicas ao bkp full, exceto a opção DIFFERENTIAL.
+
+Backup LOG
+
+	- O backup log deve ser obrigatório para o Recovery Model FULL e BULK LOGGED;
+
+	- Cada INSERT, UPDATE e DELETE realizado na base é armazenado no Log na sequência;
+
+	- Com o banco sendo utilizado, o log vai crescendo até que seja realizado um bkp do log para salvar as transações já concluídas;
+
+	- Não limpa as transações que ainda estão ativas (BEGIN TRAN);
+
+	- Deve ser criado um alerta para monitorar o tamanho do log nas bases.
+
+Sequência de Backup
+
+	- Uma sequência de backup sempre se inicia com o backup full;
+
+	- Se você alterar o Recovery Model para Simple, é quebrado a corrente/sequência de logs (LNS), ou seja, para retornar a sua sequência de bkp será obrigado a executar um full novamente.
