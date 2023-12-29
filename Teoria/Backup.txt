@@ -42,4 +42,4 @@ Sequência de Backup
 
 	- Uma sequência de backup sempre se inicia com o backup full;
 
-	- Se você alterar o Recovery Model para Simple, é quebrado a corrente/sequência de logs (LNS), ou seja, para retornar a sua sequência de bkp será obrigado a executar um full novamente.
+	- Se você alterar o Recovery Model para Simple, é quebrado a corrente/sequência de logs (LSN), ou seja, para retornar a sua sequência de bkp será obrigado a executar um full novamente.
