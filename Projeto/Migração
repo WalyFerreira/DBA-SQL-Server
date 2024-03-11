@@ -1,0 +1,23 @@
+-- Migração
+
+-- Este conteúdo aborda uma experiência de migração realizada em ambiente de trabalho;
+
+-- A necessidade desta migração veio através da obsolecência do Windows Server, onde foi criada uma EC2 atualizada;
+
+-- Desta forma, foi necessário uma migração do SQL Server e aproveitamos essa janela para atualização de versão do SQL Server 2014 para o SQL Server 2019, e para que isso pudesse ocorrer de maneira transparente e efetiva, utilizei do recurso backup/restore, tendo em vista que esta migração serviria também para uma melhor organização dos datafiles em crescimento em discos organizados e nomeados;
+
+-- Tendo em vista que toda migração envolverá diversas questões de Infraestrutura, será abordado somente os scripts que foram utilizado a nível de banco de dados.
+
+-- Passo 01
+-- Neste passo acessamos o ambiente "antigo" (nomearemos aqui como EC2_antigo) e para que fosse feito o backup full de todas as databases, utilizaremos o seguinte script dinâmico:
+
+(BACKUP FULL)
+
+-- Passo 02
+-- Após o backup finalizado com sucesso, acessaremos o ambiente "novo" (nomearemos aqui como EC2_novo) e iniciamos o processo de restore.
+-- OBSERVAÇÃO: como haverá um tempo até que o novo ambiente esteja pronto, colocaremos o restore full em modo NORECOVERY, para que no futuro seja restaurado um backup diff em modo RECOVERY:
+
+(RESTORE FULL)
+
+-- Passo 03
+-- No dia da migração, 
