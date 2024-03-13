@@ -123,7 +123,7 @@ WHERE
     AND (A.[status] != 'sleeping' OR (A.[status] = 'sleeping' AND A.open_transaction_count > 0))
 
 
-------
+------------------------------------------------------------------------------------------------------------
 
 validar proc
 
@@ -175,3 +175,63 @@ IF EXISTS (
 	PRINT 0
 	
 PRINT 1
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Para melhorar a performance da sua procedure, há algumas mudanças que você pode considerar:
+
+Evitar funções em colunas de filtro ou join: Funções como REPLACE podem tornar os índices ineficazes. Tente armazenar o valor sem formatação na tabela ou use uma coluna calculada indexada.
+
+Evitar subconsultas no SELECT: Subconsultas no SELECT podem ser custosas. Se possível, mova a lógica da subconsulta para um JOIN ou uma CTE (Common Table Expression).
+
+Evitar NOLOCK: O uso de NOLOCK pode resultar em leituras sujas (read uncommitted). Considere se isso é realmente necessário para sua lógica de negócios e, se possível, use isolamento de transação adequado.
+
+Rever índices: Verifique se os índices existentes estão sendo usados efetivamente pelas consultas. Às vezes, a criação de índices compostos ou a adição de índices incluídos pode melhorar a performance.
+
+Evitar operadores de função na cláusula WHERE: Evite usar funções em colunas da cláusula WHERE, pois isso pode impedir o uso de índices. Tente armazenar valores formatados e usá-los diretamente nas consultas.
+
+Rever a necessidade de PRINT: Se a finalidade dos PRINT é apenas para fins de debug ou monitoramento, considere remover ou comentar essas instruções em produção para evitar a sobrecarga desnecessária.
+
+Aqui está uma versão modificada da sua procedure com algumas dessas sugestões:
+
+sql
+Copy code
+DECLARE @NRPROP VARCHAR(9) = '520883855'              
+DECLARE @CPF VARCHAR(15)
+
+SELECT @CPF = REPLACE(REPLACE(PPCGC,'-',''),'.','')
+FROM PROPOSTAPANCP..CPROP WITH (NOLOCK) 
+WHERE PPNRPROP = @NRPROP
+
+IF (
+    SELECT COUNT(*) 
+    FROM CDCPANCP..COPER O WITH (NOLOCK)
+    WHERE O.OPCGCBNF = @CPF AND 
+          O.OPDTLIQ IS NULL AND 
+          O.OPCODPROD = '000001'
+) >= 5   
+    PRINT 0 
+ELSE IF EXISTS (
+    SELECT 1 
+    FROM PROPOSTAPANCP..CPROP P WITH (NOLOCK)
+    INNER JOIN PROPOSTAPANCP..CMOVP M WITH (NOLOCK) ON P.PPNRPROP = M.MPNRPROP   
+    WHERE REPLACE(REPLACE(PPCGC,'-',''),'.','') = @CPF AND 
+          M.MPSIT NOT IN ('REP', 'INT', 'CAN') AND 
+          P.PPNRPROP <> @NRPROP AND 
+          P.PPCODPRD = '000001'
+)
+    PRINT 0   
+ELSE IF EXISTS (
+    SELECT 1 
+    FROM CDCPANCP..COPER O WITH (NOLOCK)
+    WHERE O.OPCGCBNF = @CPF AND 
+          O.OPDTLIQ IS NULL AND 
+          O.OPCODPROD = '000001' AND 
+          OPNROPER <> @NRPROP AND 
+          OPDTCAD BETWEEN DATEADD(MINUTE,-2,CONVERT(SMALLDATETIME,GETDATE())) AND CONVERT(SMALLDATETIME,GETDATE())
+)
+    PRINT 0
+ELSE
+    PRINT 1
+
+Tenha em mente que a melhoria real na performance pode variar dependendo do volume de dados e da estrutura do seu banco de dados. Recomenda-se testar as alterações em um ambiente de desenvolvimento antes de implementá-las em produção.
