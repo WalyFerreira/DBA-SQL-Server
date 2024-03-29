@@ -113,4 +113,8 @@
   SELECT(@RestoreCommand)
 
 -- Passo 03
--- No dia da migração, 
+-- No dia da migração,
+
+select 'RESTORE DATABASE [' + name + '] FROM DISK = ' + '''G:\diff\' + name + '_20240308_Diff.bak'' WITH RECOVERY, STATS = 10;'
+from sys.databases
+where database_id > 4
