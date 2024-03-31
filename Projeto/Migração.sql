@@ -23,7 +23,7 @@
     DECLARE DatabaseCursor CURSOR FOR
     SELECT name
     FROM sys.databases
-    WHERE database_id > 4 and database_state = 'ONLINE' -- Exclui bases de sistema e bases que possívelmente estão OFFLINE
+    WHERE database_id > 4 AND database_state = 'ONLINE' -- Exclui bases de sistema e bases que possívelmente estão OFFLINE
     ORDER BY name
     
     OPEN DatabaseCursor
@@ -121,37 +121,46 @@
             
       
 -- Passo 03
+-- Após finalizado o Passo 2 com o backup full em modo NORECOVERY, utilizaremos o backup diff no dia da migração acessando o EC2_antigo. 
+-- Para esta finalidade utilizamos a mesma estrutura do Passo 1, mas com a alteração em objetivo o backup diff:
 
-  DECLARE @BackupPath NVARCHAR(255)
-  SET @BackupPath = 'V:\BKP\SQLWV\DIFF\' -- Substitua pelo caminho desejado
-  
-  DECLARE @CurrentDate NVARCHAR(20)
-  SET @CurrentDate = CONVERT(NVARCHAR(20), GETDATE(), 112)
-  
-  DECLARE @DatabaseName NVARCHAR(255)
-  DECLARE DatabaseCursor CURSOR FOR
-  SELECT name
+    DECLARE @BackupPath NVARCHAR(255)
+    SET @BackupPath = 'V:\BKP\SQLWV\DIFF\' -- Substitua pelo caminho desejado para realização do bkp;
+    
+    DECLARE @CurrentDate NVARCHAR(20)
+    SET @CurrentDate = CONVERT(NVARCHAR(20), GETDATE(), 112)
+    
+    DECLARE @DatabaseName NVARCHAR(255)
+    DECLARE DatabaseCursor CURSOR FOR
+    SELECT name
+    FROM sys.databases
+    WHERE database_id > 4 AND database_state = 'ONLINE' -- Exclui bases de sistema e bases que possívelmente estão OFFLINE
+    ORDER BY name
+    
+    OPEN DatabaseCursor
+    
+    FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        DECLARE @BackupName NVARCHAR(255)
+        SET @BackupName = @BackupPath + @DatabaseName + '_' + @CurrentDate + '_Diff.bak'
+    
+        BACKUP DATABASE @DatabaseName TO DISK = @BackupName WITH DIFFERENTIAL, COMPRESSION, STATS = 10
+    
+        FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
+    END
+    
+    CLOSE DatabaseCursor
+    DEALLOCATE DatabaseCursor
+
+-- Passo 4
+-- Após todo o backup diff executado, seguiremos com o restore e para isso foi desenvolvido um select simples (mas efetivo) onde nós precisamos saber apenas onde está o caminho dos diferenciais
+-- e ser atento para a estrutura da data que deve estar igual a todo o backup diff;
+-- Este select pode ser executado no EC2_novo, tendo em vista que as bases são as mesmas que no EC2_antigo e nós só precisaremos dos nomes das respectivas databases:
+
+  SELECT 'RESTORE DATABASE [' + name + '] FROM DISK = ' + '''V:\BKP\SQLWV\DIFF\\' + name + '_20240308_Diff.bak'' WITH RECOVERY, STATS = 10;'
   FROM sys.databases
-  WHERE database_id > 4 -- Exclui bancos de sistema
-  
-  OPEN DatabaseCursor
-  
-  FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
-  WHILE @@FETCH_STATUS = 0
-  BEGIN
-      DECLARE @BackupName NVARCHAR(255)
-      SET @BackupName = @BackupPath + @DatabaseName + '_' + @CurrentDate + '_Diff.bak'
-  
-      BACKUP DATABASE @DatabaseName TO DISK = @BackupName WITH DIFFERENTIAL, COMPRESSION, STATS = 10
-  
-      FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
-  END
-  
-  CLOSE DatabaseCursor
-  DEALLOCATE DatabaseCursor
-      
--- Após todo o restore full for executado, seguiremos com o restore diff e para isso foi desenvolvido um select simples (mas efetivo) onde nós precisamos saber apenas onde está o caminho dos backups diferenciais:
+  WHERE database_id > 4 AND database_state = 'ONLINE' -- Exclui bases de sistema e bases que possívelmente estão OFFLINE
+  ORDER BY name
 
-select 'RESTORE DATABASE [' + name + '] FROM DISK = ' + '''G:\diff\' + name + '_20240308_Diff.bak'' WITH RECOVERY, STATS = 10;'
-from sys.databases
-where database_id > 4
+-- Desta forma finalizamos um processo de migração das bases, sendo sempre necessário uma atenção a diversas outras configurações (não abordadas) que serão necessárias para a integridade da instância.
