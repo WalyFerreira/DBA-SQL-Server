@@ -118,7 +118,42 @@
 -- onde não é necessário nenhum trabalho manual para colocar as databases e o caminho desejado nos dois primeiros DECLARE.
 -- O script abaixo foi criado após "sentirmos a dor" do tempo de entrega, entendendo que uma instância com mais 200 databases levaria um tempo "desnecessário" até ter todo o script de retore:
 
-            
+  set nocount on
+  
+  declare @script1 varchar(max)
+  declare @database varchar(max) 
+  declare @dados varchar(100)  = 'M:\DADOS01\'
+  declare @log varchar(100) = 'M:\LOGS01\'
+  declare @bkp varchar(1000) = 'V:\BKP\SQLWV\FULL\'
+  
+  
+  
+  DECLARE c CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD for
+  	select name from sys.databases
+  OPEN c
+  FETCH NEXT FROM c INTO @database
+  
+  WHILE @@fetch_status = 0&nbsp;&nbsp;
+  BEGIN&nbsp;
+  
+  	select @script1 = CHAR(13) ++ CHAR(13) ++ CHAR(13) +'RESTORE DATABASE ['+@database+'] '+CHAR(13)+'FROM  DISK = N'''+@bkp+''+@database+'_20240308.bak'' WITH  FILE = 1'     
+  	        
+  	SELECT @script1 = @script1 + CHAR(13) +' , MOVE N'''+name+''' TO N''' + @dados+RIGHT(filename, CHARINDEX('\',REVERSE(filename))-1)+''''        
+  	FROM sys.sysaltfiles where db_name(dbid)=@database   
+  	and groupid = 1
+  
+  	SELECT @script1 = @script1 + CHAR(13) + ' , MOVE N'''+name+''' TO N''' + @log+RIGHT(filename, CHARINDEX('\',REVERSE(filename))-1)+''''        
+  	FROM sys.sysaltfiles where db_name(dbid)=@database   
+  	and groupid = 0
+  
+  	print @script1 
+  	set @script1  = ''
+  
+  	FETCH NEXT FROM c INTO @database;
+  
+  END
+  CLOSE C&nbsp;&nbsp;
+  DEALLOCATE c
       
 -- Passo 03
 -- Após finalizado o Passo 2 com o backup full em modo NORECOVERY, utilizaremos o backup diff no dia da migração acessando o EC2_antigo. 
