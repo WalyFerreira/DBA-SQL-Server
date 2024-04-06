@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-DROP PROC IF EXISTS [dbo].[sp_shink]
+DROP PROC IF EXISTS [dbo].[sp_shrink]
 GO
 
 CREATE PROC [dbo].[sp_shink]
