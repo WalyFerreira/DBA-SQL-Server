@@ -133,8 +133,8 @@
   OPEN c
   FETCH NEXT FROM c INTO @database
   
-  WHILE @@fetch_status = 0&nbsp;&nbsp;
-  BEGIN&nbsp;
+  WHILE @@fetch_status = 0
+  BEGIN
   
   	select @script1 = CHAR(13) ++ CHAR(13) ++ CHAR(13) +'RESTORE DATABASE ['+@database+'] '+CHAR(13)+'FROM  DISK = N'''+@bkp+''+@database+'_20240308.bak'' WITH  FILE = 1'     
   	        
@@ -152,7 +152,7 @@
   	FETCH NEXT FROM c INTO @database;
   
   END
-  CLOSE C&nbsp;&nbsp;
+  CLOSE C
   DEALLOCATE c
       
 -- Passo 03
